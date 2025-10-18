@@ -1,1 +1,12 @@
-
+[
+  {
+    "internalName": "mi-plugin",
+    "displayName": "Mi Plugin",
+    "author": "TuNombre",
+    "description": "Descripción corta del plugin",
+    "version": "1.0.0",
+    "sha256": "REEMPLAZAR_CON_SHA256_DEL_JAR",
+    "url": "https://raw.githubusercontent.com/javiervlsqz68-cpu/Forgegp/main/plugins/mi-plugin-1.0.0.jar",
+    "iconPath": "https://raw.githubusercontent.com/javiervlsqz68-cpu/Forgegp/main/icons/mi-plugin.png"
+  }
+]
