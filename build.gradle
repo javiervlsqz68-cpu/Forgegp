@@ -1,0 +1,86 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://repo.runelite.net'
+    }
+    mavenCentral()
+}
+
+def runeLiteVersion = '1.11.22'
+def kotlinVersion = '1.8.22'
+
+dependencies {
+    compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testImplementation 'junit:junit:4.12'
+    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
+    testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+    implementation 'org.json:json:20230227'
+    implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
+    implementation("org.benf:cfr:0.152")
+    compileOnly 'javax.inject:javax.inject:1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+}
+
+
+group = 'com.example'
+version = '5.4'
+sourceCompatibility = "11"
+targetCompatibility = "11"
+
+task FatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.example.Main'
+    }
+    baseName = 'EthanVannPlugins'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude("com/example/hidden")
+    exclude("com/example/PathingTesting")
+    with jar
+}
+
+task FatJarWithHidden(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.example.Main'
+    }
+    baseName = 'EthanVannPlugins'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username 'admin'
+                password 'password'
+            }
+            url "http://baseUrl/artifactory/libs-release-local"
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+targetCompatibility = JavaVersion.VERSION_11
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
